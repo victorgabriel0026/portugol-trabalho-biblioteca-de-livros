@@ -1,4 +1,6 @@
 algoritmo "Sistema de Biblioteca"
+// Disciplina   : [Linguagem e Lógica de Programação] 
+// Professor   : Antonio Carlos Nicolodi 
 // Professor   : Vinicius Luchtenberg Pagnussat
 
 // ============================================================
@@ -16,7 +18,6 @@ algoritmo "Sistema de Biblioteca"
 
 const
    MAX = 50
-
 var
    // Dados dos livros
    titulo      : vetor [1..MAX] de caractere
@@ -27,7 +28,13 @@ var
 
    totalLivros : inteiro
    opcao       : inteiro
-
+   //variaveis de usuario
+   
+   quantidade_usuarios : inteiro
+   usuarios            : vetor [1..MAX] de caractere
+   senha_usuarios      : vetor [1..MAX] de caractere
+   permissao_usuarios  : vetor [1..MAX] de logico
+   
    // Variaveis auxiliares
    i           : inteiro
    busca       : caractere
@@ -40,6 +47,11 @@ var
 // ============================================================
 procedimento inicializar()
 inicio
+   quantidade_usuarios := 1
+   usuarios[1] := "teste"
+   senha_usuarios[1] := "123"
+   permissao_usuarios[1] := verdadeiro
+   
    totalLivros := 0
    proxCodigo  := 1001
 
@@ -101,8 +113,8 @@ inicio
    escreval("  4 - Devolver livro")
    escreval("  5 - Consultar livro por titulo")
    escreval("  6 - Listar todos os livros")
-   escreval("  7 - Consultar lista de empréstimos")
-   escreval("  0 - Sair")
+   escreval("  7 - Sair")
+   //escreval("  0 - Sair")
    escreval("--------------------------------")
    escreva("  Escolha uma opcao: ")
 fimprocedimento
@@ -144,19 +156,21 @@ procedimento cadastrarUsuario()
 inicio
    limpatela
    escreval("===== CADASTRAR USUÁRIO =====")
-   
-      usuarios := usuarios + 1
+   se quantidade_usuarios >= MAX entao
+      escreval("ATENCAO: Quantidade de usuario cheio! Nao e possivel cadastrar mais usuarios.")
+   senao
+      quantidade_usuarios := quantidade_usuarios + 1
 
       escreva("Nome do Usuário : ")
-      leia(nome[usuarios])
+      leia(usuarios[quantidade_usuarios])
       
       escreva("Senha : ")
-      leia(senha[usuarios])
+      leia(senha_usuarios[quantidade_usuarios])
 
       escreva("Permissão           : ")
-      leia(permissao[usuarios])
+      leia(permissao_usuarios[quantidade_usuarios])
 
-      disponivel[usuarios]    := verdadeiro
+      permissao_usuarios[quantidade_usuarios]    := verdadeiro
 
       escreval("")
       escreval("Usuário cadastrado com sucesso!")
@@ -339,20 +353,23 @@ inicio
          caso 1
             cadastrarLivro()
          caso 2
-            emprestarLivro()
+            cadastrarUsuario()
          caso 3
-            devolverLivro()
+            emprestarLivro()
          caso 4
-            consultarLivro()
+            devolverLivro()
          caso 5
-            listarLivros()
+            consultarLivro()
          caso 6
+            listarLivros()
+         caso 7
             escreval("")
             escreval("Encerrando o sistema. Ate logo!")
+         caso 8
          outrocaso
             escreval("")
-            escreval("Opcao invalida! Digite um numero de 1 a 6.")
+            escreval("Opcao invalida! Digite um numero de 1 a 8.")
       fimescolha
 
-   ate opcao = 7
+   ate opcao = 9
 fimalgoritmo
