@@ -1,16 +1,17 @@
 algoritmo "Sistema de Biblioteca"
-// Disciplina   : [Linguagem e Lógica de Programação] 
-// Professor   : Antonio Carlos Nicolodi 
+// Professor   : Vinicius Luchtenberg Pagnussat
 
 // ============================================================
 //  SISTEMA DE BIBLIOTECA - Portugol (VisuAlg)
 //  Funcionalidades:
 //    1. Cadastrar livro
-//    2. Emprestar livro
-//    3. Devolver livro
-//    4. Consultar livro por titulo
-//    5. Listar todos os livros
-//    6. Sair
+//    2. Cadastrar Usuário
+//    3. Emprestar livro
+//    4. Devolver livro
+//    5. Consultar livro por titulo
+//    6. Listar todos os livros
+//    7. Lista de Empréstimos
+//    0. Sair
 // ============================================================
 
 const
@@ -22,7 +23,7 @@ var
    autor       : vetor [1..MAX] de caractere
    codigo      : vetor [1..MAX] de inteiro
    disponivel  : vetor [1..MAX] de logico
-   nomeLeitor  : vetor [1..MAX] de caractere
+   nomePessoa  : vetor [1..MAX] de caractere
 
    totalLivros : inteiro
    opcao       : inteiro
@@ -42,38 +43,37 @@ inicio
    totalLivros := 0
    proxCodigo  := 1001
 
-   // Pre-cadastro de 5 livros para demonstracao
    totalLivros := 5
 
    titulo[1]     := "Dom Casmurro"
    autor[1]      := "Machado de Assis"
    codigo[1]     := 1001
    disponivel[1] := verdadeiro
-   nomeLeitor[1] := ""
+   nomePessoa[1] := ""
 
    titulo[2]     := "O Cortico"
    autor[2]      := "Aluisio Azevedo"
    codigo[2]     := 1002
    disponivel[2] := verdadeiro
-   nomeLeitor[2] := ""
+   nomePessoa[2] := ""
 
    titulo[3]     := "Vidas Secas"
    autor[3]      := "Graciliano Ramos"
    codigo[3]     := 1003
    disponivel[3] := verdadeiro
-   nomeLeitor[3] := ""
+   nomePessoa[3] := ""
 
    titulo[4]     := "A Moreninha"
    autor[4]      := "Joaquim Manuel de Macedo"
    codigo[4]     := 1004
    disponivel[4] := verdadeiro
-   nomeLeitor[4] := ""
+   nomePessoa[4] := ""
 
    titulo[5]     := "O Guarani"
    autor[5]      := "Jose de Alencar"
    codigo[5]     := 1005
    disponivel[5] := verdadeiro
-   nomeLeitor[5] := ""
+   nomePessoa[5] := ""
 
    proxCodigo := 1006
 fimprocedimento
@@ -84,7 +84,7 @@ fimprocedimento
 procedimento cabecalho()
 inicio
    escreval("========================================")
-   escreval("       SISTEMA DE BIBLIOTECA            ")
+   escreval("               BookManager              ")
    escreval("========================================")
 fimprocedimento
 
@@ -96,11 +96,13 @@ inicio
    escreval("")
    escreval("-------- MENU PRINCIPAL --------")
    escreval("  1 - Cadastrar livro")
-   escreval("  2 - Emprestar livro")
-   escreval("  3 - Devolver livro")
-   escreval("  4 - Consultar livro por titulo")
-   escreval("  5 - Listar todos os livros")
-   escreval("  6 - Sair")
+   escreval("  2 - Cadastrar Usuário")
+   escreval("  3 - Emprestar livro")
+   escreval("  4 - Devolver livro")
+   escreval("  5 - Consultar livro por titulo")
+   escreval("  6 - Listar todos os livros")
+   escreval("  7 - Consultar lista de empréstimos")
+   escreval("  0 - Sair")
    escreval("--------------------------------")
    escreva("  Escolha uma opcao: ")
 fimprocedimento
@@ -110,7 +112,7 @@ fimprocedimento
 // ============================================================
 procedimento cadastrarLivro()
 inicio
-   escreval("")
+   limpatela
    escreval("===== CADASTRAR LIVRO =====")
 
    se totalLivros >= MAX entao
@@ -136,11 +138,37 @@ inicio
 fimprocedimento
 
 // ============================================================
+// PROCEDIMENTO: Cadastrar Usuário
+// ============================================================
+procedimento cadastrarUsuario()
+inicio
+   limpatela
+   escreval("===== CADASTRAR USUÁRIO =====")
+   
+      usuarios := usuarios + 1
+
+      escreva("Nome do Usuário : ")
+      leia(nome[usuarios])
+      
+      escreva("Senha : ")
+      leia(senha[usuarios])
+
+      escreva("Permissão           : ")
+      leia(permissao[usuarios])
+
+      disponivel[usuarios]    := verdadeiro
+
+      escreval("")
+      escreval("Usuário cadastrado com sucesso!")
+   fimse
+fimprocedimento
+
+// ============================================================
 // PROCEDIMENTO: Emprestar livro
 // ============================================================
 procedimento emprestarLivro()
 inicio
-   escreval("")
+   limpatela
    escreval("===== EMPRESTAR LIVRO =====")
 
    escreva("Digite o titulo do livro: ")
@@ -187,7 +215,7 @@ fimprocedimento
 // ============================================================
 procedimento devolverLivro()
 inicio
-   escreval("")
+   limpatela
    escreval("===== DEVOLVER LIVRO =====")
 
    escreva("Digite o titulo do livro: ")
@@ -232,7 +260,7 @@ fimprocedimento
 // ============================================================
 procedimento consultarLivro()
 inicio
-   escreval("")
+   limpatela
    escreval("===== CONSULTAR LIVRO =====")
 
    escreva("Digite o titulo do livro: ")
@@ -269,7 +297,7 @@ fimprocedimento
 // ============================================================
 procedimento listarLivros()
 inicio
-   escreval("")
+   limpatela
    escreval("===== ACERVO COMPLETO =====")
 
    se totalLivros = 0 entao
@@ -326,6 +354,5 @@ inicio
             escreval("Opcao invalida! Digite um numero de 1 a 6.")
       fimescolha
 
-   ate opcao = 6
-
+   ate opcao = 7
 fimalgoritmo
