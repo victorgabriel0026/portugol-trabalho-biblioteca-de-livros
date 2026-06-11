@@ -1,4 +1,6 @@
 algoritmo "Sistema de Biblioteca"
+//  
+//  
 // Disciplina   : [Linguagem e Lógica de Programação] 
 // Professor   : Antonio Carlos Nicolodi 
 // Professor   : Vinicius Luchtenberg Pagnussat
@@ -34,6 +36,9 @@ var
    usuarios            : vetor [1..MAX] de caractere
    senha_usuarios      : vetor [1..MAX] de caractere
    permissao_usuarios  : vetor [1..MAX] de logico
+   usuario_logado      : caractere
+   permissao_logada    : logico
+   login_ok            : logico
    
    // Variaveis auxiliares
    i           : inteiro
@@ -41,6 +46,54 @@ var
    encontrado  : logico
    posicao     : inteiro
    proxCodigo  : inteiro
+   
+// ============================================================
+// PROCEDIMENTO: Tela de Login
+// ============================================================
+
+procedimento login()
+var
+   nome_digitado  : caractere
+   senha_digitada : caractere
+   i              : inteiro
+inicio
+   login_ok := falso
+
+   repita
+      limpatela
+      escreval("========================================")
+      escreval("           TELA DE LOGIN")
+      escreval("========================================")
+
+      escreva("Usuario: ")
+      leia(nome_digitado)
+
+      escreva("Senha: ")
+      leia(senha_digitada)
+
+      login_ok := falso
+
+      para i de 1 ate quantidade_usuarios faca
+         se (usuarios[i] = nome_digitado) e (senha_usuarios[i] = senha_digitada) entao
+            login_ok := verdadeiro
+            usuario_logado   := usuarios[i]
+            permissao_logada := permissao_usuarios[i]
+         fimse
+      fimpara
+
+      se login_ok = falso entao
+         escreval("")
+         escreval("Usuario ou senha incorretos!")
+         escreval("Pressione ENTER para tentar novamente...")
+         leia(nome_digitado)
+      fimse
+
+   ate login_ok = verdadeiro
+
+   escreval("")
+   escreval("Login realizado com sucesso!")
+   escreval("Bem-vindo, ", usuario_logado)
+fimprocedimento
 
 // ============================================================
 // PROCEDIMENTO: Inicializar dados
@@ -48,9 +101,10 @@ var
 procedimento inicializar()
 inicio
    quantidade_usuarios := 1
-   usuarios[1] := "teste"
-   senha_usuarios[1] := "123"
-   permissao_usuarios[1] := verdadeiro
+
+   usuarios[1] := "LabvgAdmin"
+   senha_usuarios[1] := "123456"
+   permissao_usuarios[1] := verdadeiro  // verdadeiro = ADMIN
    
    totalLivros := 0
    proxCodigo  := 1001
@@ -95,6 +149,7 @@ fimprocedimento
 // ============================================================
 procedimento cabecalho()
 inicio
+   limpatela
    escreval("========================================")
    escreval("               BookManager              ")
    escreval("========================================")
@@ -114,7 +169,6 @@ inicio
    escreval("  5 - Consultar livro por titulo")
    escreval("  6 - Listar todos os livros")
    escreval("  7 - Sair")
-   //escreval("  0 - Sair")
    escreval("--------------------------------")
    escreva("  Escolha uma opcao: ")
 fimprocedimento
@@ -140,7 +194,7 @@ inicio
 
       codigo[totalLivros]     := proxCodigo
       disponivel[totalLivros] := verdadeiro
-      nomeLeitor[totalLivros] := ""
+      nomePessoa[totalLivros] := ""
       proxCodigo              := proxCodigo + 1
 
       escreval("")
@@ -167,10 +221,8 @@ inicio
       escreva("Senha : ")
       leia(senha_usuarios[quantidade_usuarios])
 
-      escreva("Permissão           : ")
+      escreva("Permissão (1-Admin / 0-Atendente): ")
       leia(permissao_usuarios[quantidade_usuarios])
-
-      permissao_usuarios[quantidade_usuarios]    := verdadeiro
 
       escreval("")
       escreval("Usuário cadastrado com sucesso!")
@@ -208,18 +260,18 @@ inicio
       escreval("  Codigo  : ", codigo[posicao])
 
       se nao disponivel[posicao] entao
-         escreval("  Status  : EMPRESTADO para ", nomeLeitor[posicao])
+         escreval("  Status  : EMPRESTADO para ", nomePessoa[posicao])
          escreval("")
          escreval("Este livro ja esta emprestado. Nao e possivel emprestar novamente.")
       senao
          escreval("  Status  : Disponivel")
          escreval("")
          escreva("Nome do leitor: ")
-         leia(nomeLeitor[posicao])
+         leia(nomePessoa[posicao])
          disponivel[posicao] := falso
          escreval("")
          escreval("Emprestimo realizado com sucesso!")
-         escreval("Livro '", titulo[posicao], "' emprestado para ", nomeLeitor[posicao], ".")
+         escreval("Livro '", titulo[posicao], "' emprestado para ", nomePessoa[posicao], ".")
       fimse
    fimse
 fimprocedimento
@@ -259,10 +311,10 @@ inicio
          escreval("")
          escreval("Este livro nao esta emprestado. Nao ha devolucao a registrar.")
       senao
-         escreval("  Status  : Emprestado para ", nomeLeitor[posicao])
+         escreval("  Status  : Emprestado para ", nomePessoa[posicao])
          escreval("")
          disponivel[posicao]  := verdadeiro
-         nomeLeitor[posicao]  := ""
+         nomePessoa[posicao]  := ""
          escreval("Devolucao registrada com sucesso!")
          escreval("Livro '", titulo[posicao], "' devolvido ao acervo.")
       fimse
@@ -294,7 +346,7 @@ inicio
          se disponivel[i] entao
             escreval("  Status : Disponivel para emprestimo")
          senao
-            escreval("  Status : Emprestado para ", nomeLeitor[i])
+            escreval("  Status : Emprestado para ", nomePessoa[i])
          fimse
 
          escreval("----------------------------------")
@@ -329,7 +381,7 @@ inicio
          se disponivel[i] entao
             escreval("      Status : Disponivel")
          senao
-            escreval("      Status : Emprestado - ", nomeLeitor[i])
+            escreval("      Status : Emprestado - ", nomePessoa[i])
          fimse
       fimpara
 
@@ -342,6 +394,7 @@ fimprocedimento
 // ============================================================
 inicio
    inicializar()
+   login()
    cabecalho()
    escreval("Sistema iniciado com ", totalLivros, " livros pre-cadastrados.")
 
