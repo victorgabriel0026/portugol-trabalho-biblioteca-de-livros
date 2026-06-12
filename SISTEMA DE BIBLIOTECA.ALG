@@ -1,9 +1,9 @@
 algoritmo "Sistema de Biblioteca"
-//  
-//  
-// Disciplina   : [Linguagem e Lógica de Programação] 
-// Professor   : Antonio Carlos Nicolodi 
-// Professor   : Vinicius Luchtenberg Pagnussat
+//
+//
+// Disciplina   : VisuAlg
+// Professor   : Vinicius
+// Alunos   : Vinicius Luchtenberg, Mikael, Endrel, Victor Gabriel
 
 // ============================================================
 //  SISTEMA DE BIBLIOTECA - Portugol (VisuAlg)
@@ -31,25 +31,25 @@ var
    totalLivros : inteiro
    opcao       : inteiro
    //variaveis de usuario
-   
+
    quantidade_usuarios : inteiro
    usuarios            : vetor [1..MAX] de caractere
    senha_usuarios      : vetor [1..MAX] de caractere
-   permissao_usuarios  : vetor [1..MAX] de logico
+   permissao_usuarios  : vetor [1..MAX] de inteiro
    usuario_logado      : caractere
-   permissao_logada    : logico
+   permissao_logada    : inteiro
    login_ok            : logico
-   
+
    // Variaveis auxiliares
    i           : inteiro
    busca       : caractere
    encontrado  : logico
    posicao     : inteiro
    proxCodigo  : inteiro
-   
-// ============================================================
-// PROCEDIMENTO: Tela de Login
-// ============================================================
+
+   // ============================================================
+   // PROCEDIMENTO: Tela de Login
+   // ============================================================
 
 procedimento login()
 var
@@ -76,7 +76,7 @@ inicio
       para i de 1 ate quantidade_usuarios faca
          se (usuarios[i] = nome_digitado) e (senha_usuarios[i] = senha_digitada) entao
             login_ok := verdadeiro
-            usuario_logado   := usuarios[i]
+            usuario_logado := usuarios[i]
             permissao_logada := permissao_usuarios[i]
          fimse
       fimpara
@@ -104,8 +104,8 @@ inicio
 
    usuarios[1] := "LabvgAdmin"
    senha_usuarios[1] := "123456"
-   permissao_usuarios[1] := verdadeiro  // verdadeiro = ADMIN
-   
+   permissao_usuarios[1] := 1  // 1 = ADMIN
+
    totalLivros := 0
    proxCodigo  := 1001
 
@@ -161,16 +161,32 @@ fimprocedimento
 procedimento exibirMenu()
 inicio
    escreval("")
-   escreval("-------- MENU PRINCIPAL --------")
-   escreval("  1 - Cadastrar livro")
-   escreval("  2 - Cadastrar Usuário")
-   escreval("  3 - Emprestar livro")
-   escreval("  4 - Devolver livro")
-   escreval("  5 - Consultar livro por titulo")
-   escreval("  6 - Listar todos os livros")
-   escreval("  7 - Sair")
-   escreval("--------------------------------")
-   escreva("  Escolha uma opcao: ")
+   escreval("Usuario logado: ", usuario_logado)
+
+   se permissao_logada = 1 entao
+      // ADMIN
+      escreval("-------- MENU ADMIN --------")
+      escreval("  1 - Cadastrar livro")
+      escreval("  2 - Usuarios")
+      escreval("  3 - Emprestar livro")
+      escreval("  4 - Devolver livro")
+      escreval("  5 - Consultar livro por titulo")
+      escreval("  6 - Listar todos os livros")
+      escreval("  7 - Sair")
+      escreval("----------------------------")
+   senao
+      // ATENDENTE
+      escreval("------ MENU ATENDENTE ------")
+      escreval("  1 - Cadastrar livro")
+      escreval("  3 - Emprestar livro")
+      escreval("  4 - Devolver livro")
+      escreval("  5 - Consultar livro por titulo")
+      escreval("  6 - Listar todos os livros")
+      escreval("  7 - Sair")
+      escreval("----------------------------")
+   fimse
+
+   escreva("Escolha uma opcao: ")
 fimprocedimento
 
 // ============================================================
@@ -204,8 +220,89 @@ inicio
 fimprocedimento
 
 // ============================================================
-// PROCEDIMENTO: Cadastrar Usuário
+// PROCEDIMENTO: Tela de Usuário
 // ============================================================
+procedimento Usuario()
+inicio
+   limpatela
+   escreval("-------- USUÁRIO --------")
+   escreval(" 1 - Trocar usuário")
+   escreval(" 2 - Cadastrar Usuário")
+   escreval(" 3 - Voltar")
+   escreval("--------------------------")
+
+   leia(opcao)
+
+   escolha opcao
+   caso 1
+      trocarUsuario()
+   caso 2
+      cadastrarUsuario()
+   caso 3
+      exibirMenu()
+   fimescolha
+
+fimprocedimento
+
+// ============================================================
+// PROCEDIMENTO: Trocar de Usuário
+// ============================================================
+
+procedimento trocarUsuario()
+
+var
+   i, escolhe : inteiro
+      senha_digitada : caractere
+inicio
+   limpatela
+   escreval("===== TROCAR USUARIO =====")
+
+   se quantidade_usuarios = 0 entao
+      escreval("Nao ha usuarios cadastrados.")
+      retorne
+   fimse
+
+   escreval("")
+   escreval("Usuarios disponiveis:")
+
+   para i de 1 ate quantidade_usuarios faca
+      escreval(i, " - ", usuarios[i])
+   fimpara
+
+   escreval("")
+   escreva("Escolha o numero do usuario: ")
+   leia(escolhe)
+
+   se (escolhe < 1) ou (escolhe > quantidade_usuarios) entao
+      escreval("Usuario invalido!")
+   senao
+      escreva("Digite a senha: ")
+      leia(senha_digitada)
+
+      se senha_digitada = senha_usuarios[escolhe] entao
+         usuario_logado := usuarios[escolhe]
+            permissao_logada := permissao_usuarios[escolhe]
+
+               escreval("")
+               escreval("Usuario alterado com sucesso!")
+               escreval("Usuario atual: ", usuario_logado)
+
+               se permissao_logada = 1 entao
+                  escreval("Permissao: ADMIN")
+               senao
+                  escreval("Permissao: ATENDENTE")
+               fimse
+            senao
+               escreval("")
+               escreval("Senha incorreta!")
+            fimse
+         fimse
+fimprocedimento
+
+// ============================================================
+// PROCEDIMENTO: Cadastra Usuário
+// ============================================================
+
 procedimento cadastrarUsuario()
 inicio
    limpatela
@@ -217,7 +314,7 @@ inicio
 
       escreva("Nome do Usuário : ")
       leia(usuarios[quantidade_usuarios])
-      
+
       escreva("Senha : ")
       leia(senha_usuarios[quantidade_usuarios])
 
@@ -403,26 +500,25 @@ inicio
       leia(opcao)
 
       escolha opcao
-         caso 1
-            cadastrarLivro()
-         caso 2
-            cadastrarUsuario()
-         caso 3
-            emprestarLivro()
-         caso 4
-            devolverLivro()
-         caso 5
-            consultarLivro()
-         caso 6
-            listarLivros()
-         caso 7
-            escreval("")
-            escreval("Encerrando o sistema. Ate logo!")
-         caso 8
-         outrocaso
-            escreval("")
-            escreval("Opcao invalida! Digite um numero de 1 a 8.")
+      caso 1
+         cadastrarLivro()
+      caso 2
+         Usuario()
+      caso 3
+         emprestarLivro()
+      caso 4
+         devolverLivro()
+      caso 5
+         consultarLivro()
+      caso 6
+         listarLivros()
+      caso 7
+         escreval("")
+         escreval("Encerrando o sistema. Ate logo!")
+      outrocaso
+         escreval("")
+         escreval("Opcao invalida! Digite um numero de 1 a 8.")
       fimescolha
 
-   ate opcao = 9
+   ate opcao = 7
 fimalgoritmo
